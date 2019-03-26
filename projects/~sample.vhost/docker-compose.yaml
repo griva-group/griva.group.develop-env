@@ -1,10 +1,12 @@
 version: "3"
 services:
   php:
-    build: ./env/php
+    build:
+      context: ./env/php
+      args:
+        - PHP_VERSION=7.3
     container_name: sample.vhost.php
     environment:
-      - PHP_VERSION=7.3
       - PHP_HOST=sample.vhost
       - PHP_DIR=~sample.vhost
       - PHP_UPLOAD_MAX_FILESIZE=100M
