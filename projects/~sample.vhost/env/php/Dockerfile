@@ -15,8 +15,9 @@ RUN set -x \
     && apt-get install -y --no-install-recommends wget apt-transport-https ca-certificates git gettext-base
 
 # Other environment variables
-ENV TIMEZONE Europe/Moscow
 ARG PHP_VERSION=7.3
+ENV PHP_VERSION=${PHP_VERSION}
+ENV TIMEZONE Europe/Moscow
 
 # Добавляем необходимые репозитории и устанавливаем пакеты веб-сервера
 RUN set -x \
