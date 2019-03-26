@@ -1,4 +1,4 @@
-FROM debian:jessie-slim
+FROM debian:stretch-slim
 
 # Author
 MAINTAINER Vasily Grigoriev <vasily.grigoriev@gridark.name>
@@ -21,7 +21,7 @@ ARG PHP_VERSION=7.3
 # Добавляем необходимые репозитории и устанавливаем пакеты веб-сервера
 RUN set -x \
     && wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg \
-    && echo "deb https://packages.sury.org/php/ jessie main" > /etc/apt/sources.list.d/php.list \
+    && echo "deb https://packages.sury.org/php/ stretch main" > /etc/apt/sources.list.d/php.list \
     && apt-get update \
     && apt-get install -y --no-install-recommends \
         php${PHP_VERSION}-cli \
