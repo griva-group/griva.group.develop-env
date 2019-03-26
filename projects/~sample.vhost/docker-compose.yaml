@@ -1,0 +1,35 @@
+version: "3"
+services:
+  php:
+    build: ./env/php
+    container_name: sample.vhost.php
+    environment:
+      - PHP_VERSION=7.3
+      - PHP_HOST=sample.vhost
+      - PHP_DIR=~sample.vhost
+      - PHP_UPLOAD_MAX_FILESIZE=100M
+      - PHP_POST_MAX_SIZE=100M
+    volumes:
+      - .:/var/www/vhost:rw
+      - ./env/php/logs:/var/log/php-fpm-alternative:rw
+      - ./env/php/etc:/etc/php/all/fpm:rw
+    networks:
+      - ggdde.network
+    depends_on:
+      - sql
+  sql:
+    image: 'bitnami/mariadb'
+    container_name: sample.vhost.sql
+    environment:
+      - MARIADB_DATABASE=develop
+      - MARIADB_USER=develop
+      - MARIADB_PASSWORD=secret
+      - ALLOW_EMPTY_PASSWORD=yes
+    volumes:
+      - ./env/sql:/bitnami/mariadb
+    networks:
+      - ggdde.network
+
+networks:
+  ggdde.network:
+    external: true
