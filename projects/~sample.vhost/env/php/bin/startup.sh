@@ -21,7 +21,7 @@ trap _disable_nginx_host INT TERM
 ## END SECTION -- LIVE FUNCTIONS
 
 # Create symlink for vhost folder
-ln -sf /var/www/vhost /var/www/${PHP_DIR}
+ln -sfnF /var/www/vhost /var/www/${PHP_DIR}
 chown www-data:www-data /var/www/${PHP_DIR}
 
 # Change php-fpm config dir
