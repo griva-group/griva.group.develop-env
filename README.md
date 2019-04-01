@@ -18,8 +18,8 @@ domain-name.vhost
 В корневой папке проекта выполняем следющие комманды:
 
 ```bash
-docker build --tag=ggdde.nginx ./webserver # Собираем новый образ nginx сервера
-docker network create ggdde.network        # Создаем новый ethernet-мост
+docker build --tag=ggenv.nginx ./webserver # Собираем новый образ nginx сервера
+docker network create ggenv.network        # Создаем новый ethernet-мост
 ```
 
 ##### 3. Запуск конейнера http-сервера
@@ -29,8 +29,8 @@ docker run -d \
     -p 80:80 \
     -v "$(pwd)/projects":/var/www:rw \
     -v "$(pwd)/webserver/logs":/var/log/nginx:rw \
-    --network ggdde.network \
-    --name ggdde.nginx ggdde.nginx
+    --network ggenv.network \
+    --name ggenv.nginx ggenv.nginx
 ```
 
 *При создании контейнера на ОС Windows, необходимо ```$(pwd)``` заменить на
@@ -76,23 +76,23 @@ docker-compose up -d
 ##### 4. Перегрузка конфигурации http-сервера
 
 ```bash
-docker exec -ti ggdde.nginx nginx -s reload
+docker exec -ti ggenv.nginx nginx -s reload
 ```
 
 ## Список полезных комманд
 
 ```bash
 # Запуск уже созданного контейнера http-сервера
-docker start ggdde.nginx/ggdde.pma
+docker start ggenv.nginx/ggenv.pma
 
 # Принудительная остановка контейнера http-сервера
-docker stop -t 5 ggdde.nginx/ggdde.pma
+docker stop -t 5 ggenv.nginx/ggenv.pma
 
 # Перезагрузка конфигурации http-сервера
-docker exec -ti ggdde.nginx nginx -s reload
+docker exec -ti ggenv.nginx nginx -s reload
 
 # Войти в интерактивную оболочку контейнера http-сервера
-docker exec -i -t ggdde.nginx/ggdde.pma /bin/bash
+docker exec -i -t ggenv.nginx/ggenv.pma /bin/bash
 ```
 
 ## Создание контейнера с phpMyAdmin панелью
@@ -101,21 +101,21 @@ docker exec -i -t ggdde.nginx/ggdde.pma /bin/bash
 docker run \
     -p 8081:80 \
     -e PMA_ARBITRARY=1 \
-    --network ggdde.network \
-    --name ggdde.pma phpmyadmin/phpmyadmin
+    --network ggenv.network \
+    --name ggenv.pma phpmyadmin/phpmyadmin
 ```
 
 И набор полезных комманд после его создания
 
 ```bash
 # Запуск уже созданного контейнера с сервером nginx
-docker start ggdde.pma
+docker start ggenv.pma
 
 # Принудительная остановка сервера nginx
-docker stop -t 5 ggdde.pma
+docker stop -t 5 ggenv.pma
 
 # Перезагрузка сервера
-docker restart ggdde.pma
+docker restart ggenv.pma
 ```
 
 ## Создание удобной рабочей среды средствами DNS-proxy

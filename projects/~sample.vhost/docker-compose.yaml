@@ -4,7 +4,7 @@ services:
     build:
       context: ./env/php
       args:
-        - PHP_VERSION=7.3
+        - PHP_VERSION=5.6
     container_name: sample.vhost.php
     environment:
       - PHP_HOST=sample.vhost
@@ -16,7 +16,7 @@ services:
       - ./env/php/logs:/var/log/php-fpm-alternative:rw
       - ./env/php/etc:/etc/php/all/fpm:rw
     networks:
-      - ggdde.network
+      - ggenv.network
     depends_on:
       - sql
   sql:
@@ -30,8 +30,8 @@ services:
     volumes:
       - ./env/sql:/bitnami/mariadb
     networks:
-      - ggdde.network
+      - ggenv.network
 
 networks:
-  ggdde.network:
+  ggenv.network:
     external: true
