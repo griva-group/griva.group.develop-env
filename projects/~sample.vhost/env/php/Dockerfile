@@ -1,6 +1,12 @@
 FROM debian:stretch-slim
 
-RUN apt-get update && apt-get install -y --no-install-recommends wget gettext-base git apt-transport-https ca-certificates
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    wget \
+    gettext-base \
+    git \
+    apt-transport-https \
+    ca-certificates \
+    iproute2
 
 ARG PHP_VERSION=7.3
 ENV PHP_VERSION=${PHP_VERSION}

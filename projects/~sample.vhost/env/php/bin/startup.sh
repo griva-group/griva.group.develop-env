@@ -22,7 +22,7 @@ trap _disable_nginx_host INT TERM
 
 # Create symlink for vhost folder
 ln -sfnF /var/www/vhost /var/www/${PHP_DIR}
-chown www-data:www-data /var/www/${PHP_DIR}
+chown -R www-data:www-data /var/www/${PHP_DIR}
 
 # Change php-fpm config dir
 cd /etc/php/${PHP_VERSION}/fpm/
@@ -37,6 +37,9 @@ for poolfile in `find /etc/php/all/fpm/pool.d/ -type f`
 do
     envsubst "`printf '${%s} ' $(bash -c "compgen -A variable")`" < $poolfile > `basename $poolfile`
 done
+
+# Add host loop to host machine
+echo "$(/sbin/ip route|awk '/default/ { print $3 }')  ${PHP_HOST}" >> /etc/hosts
 
 # Running server
 /usr/sbin/php-fpm${PHP_VERSION} --nodaemonize &
