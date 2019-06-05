@@ -1,36 +1,38 @@
-version: "3"
+version: "3.7"
 services:
   php:
     build:
       context: ./env/php
       args:
-        - PHP_VERSION=5.6
-    container_name: sample.vhost.php
+        - PHP_VERSION=7.2
+    container_name: php.sample.vhost
     environment:
-      - PHP_HOST=sample.vhost
-      - PHP_DIR=~sample.vhost
-      - PHP_UPLOAD_MAX_FILESIZE=100M
-      - PHP_POST_MAX_SIZE=100M
+      PHP_HOST: sample.vhost
+      PHP_DIR: sample.vhost
     volumes:
-      - .:/var/www/vhost:rw
-      - ./env/php/logs:/var/log/php-fpm-alternative:rw
-      - ./env/php/etc:/etc/php/all/fpm:rw
+      - .:/var/www/vhost:rw,delegated
     networks:
       - ggenv.network
     depends_on:
       - sql
   sql:
-    image: 'bitnami/mariadb'
-    container_name: sample.vhost.sql
+    image: mysql/mysql-server:5.6
+    container_name: sql.sample.vhost
+    command: mysqld --innodb-flush-method=littlesync --innodb-use-native-aio=OFF --log_bin=ON --log_bin=ON --socket=/tmp/mysqld.sock
     environment:
-      - MARIADB_DATABASE=develop
-      - MARIADB_USER=develop
-      - MARIADB_PASSWORD=secret
-      - ALLOW_EMPTY_PASSWORD=yes
+      MYSQL_DATABASE: develop
+      MYSQL_USER: develop
+      MYSQL_PASSWORD: qweR432!
+      MYSQL_ROOT_PASSWORD: qweR432!
+      BIND_ADDRESS: 0.0.0.0
     volumes:
-      - ./env/sql:/bitnami/mariadb
+      - ggenv.mysql.5.6:/var/lib/mysql:delegated
     networks:
       - ggenv.network
+
+volumes:
+  ggenv.mysql.5.6:
+    external: true
 
 networks:
   ggenv.network:

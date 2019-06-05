@@ -1,1 +1,6 @@
-.DS_Store
+# Basic ignoring files and folders
+.git
+**/*.log
+
+# IDE files
+.idea
