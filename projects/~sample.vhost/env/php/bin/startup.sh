@@ -17,8 +17,6 @@ _activate_nginx_host
 trap _disable_nginx_host INT TERM
 ## END SECTION -- LIVE FUNCTIONS
 
-echo ${GGDDE_NGINX_CONF}
-
 # Add host loop to host machine
 #echo "$(/sbin/ip route|awk '/default/ { print $3 }')  ${PHP_HOST}" >> /etc/hosts
 
