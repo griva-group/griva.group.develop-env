@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 ## START SECTION -- LIVE FUNCTIONS
-GGDDE_NGINX_CONF="/var/www/${VHOST_NAME}/env/php/etc/nginx"
+GGDDE_NGINX_CONF="/var/www/vhost/env/php/etc/nginx"
 _activate_nginx_host() {
     if [ -f "$GGDDE_NGINX_CONF/nginx.conf" ]; then
         envsubst < "$GGDDE_NGINX_CONF/nginx.conf" > "$GGDDE_NGINX_CONF/live.nginx.conf"
