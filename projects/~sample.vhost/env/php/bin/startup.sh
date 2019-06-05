@@ -31,6 +31,9 @@ do
      envsubst < $poolfile > `basename $poolfile`
 done
 
+# Add host loop to host machine
+echo "$(/sbin/ip route|awk '/default/ { print $3 }')  ${PHP_HOST}" >> /etc/hosts
+
 # Running server
 php-fpm
 
