@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 ## START SECTION -- LIVE FUNCTIONS
-GGDDE_NGINX_CONF="/var/www/vhost/env/php/etc/nginx"
+GGDDE_NGINX_CONF="/var/www/${VHOST_NAME}/env/php/etc/nginx"
 _activate_nginx_host() {
     if [ -f "$GGDDE_NGINX_CONF/nginx.conf" ]; then
         envsubst < "$GGDDE_NGINX_CONF/nginx.conf" > "$GGDDE_NGINX_CONF/live.nginx.conf"
@@ -17,11 +17,8 @@ _activate_nginx_host
 trap _disable_nginx_host INT TERM
 ## END SECTION -- LIVE FUNCTIONS
 
-# Add host loop to host machine
-#echo "$(/sbin/ip route|awk '/default/ { print $3 }')  ${PHP_HOST}" >> /etc/hosts
-
 # Create symlink for vhost folder and reset rights
-cd /var/www && ln -sfnF vhost ${PHP_DIR}
+cd /var/www && ln -sfnF vhost ${VHOST_NAME}
 chown -R www-data:www-data /var/www
 
 for poolfile in `find /usr/local/etc/php-fpm.d/ -type f`
@@ -30,7 +27,7 @@ do
 done
 
 # Add host loop to host machine
-echo "$(/sbin/ip route|awk '/default/ { print $3 }')  ${PHP_HOST}" >> /etc/hosts
+echo "$(/sbin/ip route|awk '/default/ { print $3 }')  ${VHOST_NAME}" >> /etc/hosts
 
 # Running server
 php-fpm
