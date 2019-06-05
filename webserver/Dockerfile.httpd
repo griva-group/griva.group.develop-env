@@ -1,0 +1,9 @@
+FROM httpd:2.4
+
+# Other environment variables
+ENV TIMEZONE Europe/Moscow
+
+# Include specify files
+COPY etc/httpd.conf /usr/local/apache2/conf/httpd.conf
+COPY etc/httpd.conf.d /usr/local/apache2/conf/httpd.conf.d
+COPY usr/share /usr/local/apache2/htdocs
