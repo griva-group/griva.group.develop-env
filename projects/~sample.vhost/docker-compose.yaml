@@ -9,7 +9,7 @@ services:
     environment:
       VHOST_NAME: sample.vhost
     volumes:
-      - .:/var/www/vhost:rw,delegated
+      - .:/var/www/vhost:rw,cached
     networks:
       - ggenv.network
     depends_on:
@@ -32,7 +32,7 @@ services:
       MYSQL_ROOT_PASSWORD: qweR432!
       BIND_ADDRESS: 0.0.0.0
     volumes:
-      - ggenv.mysql.5.6:/var/lib/mysql:delegated
+      - ggenv.mysql.5.6:/var/lib/mysql:cached
     networks:
       - ggenv.network
 
