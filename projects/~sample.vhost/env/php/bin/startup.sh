@@ -19,15 +19,12 @@ trap _disable_nginx_host INT TERM
 
 # Create symlink for vhost folder and reset rights
 cd /var/www && ln -sfnF vhost ${VHOST_NAME}
-chown -R www-data:www-data /var/www
+chown www-data:www-data /var/www
 
 for poolfile in `find /usr/local/etc/php-fpm.d/ -type f`
 do
      envsubst < $poolfile > `basename $poolfile`
 done
-
-# Add host loop to host machine
-echo "$(/sbin/ip route|awk '/default/ { print $3 }')  ${VHOST_NAME}" >> /etc/hosts
 
 # Running server
 php-fpm
