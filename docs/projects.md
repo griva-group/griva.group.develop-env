@@ -21,6 +21,65 @@ services:
     container_name: php.%project_name%.sql
 ```
 
+### Получение ssl-сертификатов
+
+!!! В данный момент получение и настройка описаны только для http-сервера nginx
+
+В базовой настройке http-серверов по умолчанию зашиты кофигурационные файлы для
+правильно обработки acme-challenge, поэтому никаких особых действий не требутся.
+
+Для запуска сертифицирующего контейнера необходимо перейти в корневую папку
+данной сборки и выполнить следующую команду. После запуска контейнера следуйте
+его инструкциям.
+
+```bash
+docker run -it --rm --name certbot \
+    -v ggenv.cert.storage:/etc/letsencrypt \
+    -v $(pwd)/projects:/var/lib/letsencrypt \
+    certbot/certbot certonly
+```
+
+После, необходимо обновить базовый конфигурационный файл, и привести от такого
+вида:
+
+```smartyconfig
+server {
+    listen 80;
+    listen [::]:80;
+    
+    #...
+}
+```
+
+К такому:
+
+```smartyconfig
+server {
+    listen [::]:443 ssl http2 ipv6only=on;
+    listen 443 ssl http2;
+    
+    #...
+    
+    ssl_certificate /etc/letsencrypt/live/${VHOST_NAME}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/${VHOST_NAME}/privkey.pem;
+
+}
+
+server {
+    if ($$host = ${VHOST_NAME}) {
+        return 301 https://$$host$$request_uri;
+    } # managed by Certbot
+
+
+    listen 80;
+    listen [::]:80;
+
+    server_name ${VHOST_NAME};
+    include nginx.conf.d/letsencrypt.conf;
+    return 404; # managed by Certbot
+}
+```
+
 ### Управление контейнерами
 
 Управление контейнерами происходит с помощью следующих команд, которые должны
@@ -41,11 +100,9 @@ docker exec -ti php.%project_name$ /bin/bash
 
 ### Создание виртуального раздела
 
-Он необходим только при работе на не-linux ОС, потому что основная природа
-docker - linux, и с другими файловыми система, такими как NTFS, APFS он
-работает через прослойку, что сказывается на производительности. В основном,
-я рекомендую его использовать при локальной разработке для размещения файлов
-БД.
+Он необходим только для оптимизации файловой структуры контейнеров и приводит к
+ускорению файловых операций, что безусловно влияет на производительность сайта
+в целом.
 
 Создать раздел можно следующей командой. Желательно, что бы в названии
 содержался домен виртуального хоста, тип и версия сервера БД.
@@ -63,7 +120,7 @@ services:
   sql:
     # ...
     volumes:
-      - sql56.sample.vhost:/var/lib/mysql:delegated
+      - sql56.sample.vhost:/var/lib/mysql:cached
   # ...
 volumes:
   sql56.sample.vhost:

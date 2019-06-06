@@ -26,6 +26,37 @@ docker network create ggenv.network
 Это необходимо, потому что без нее мы не сможем создать гибкую систему, которая
 смогла бы поддерживать несколько виртуальных хостов.
 
+### Правила проброса портов в production, использование ssl
+
+Для использования данного решения на публичных серверах, нехобходиом подумать о
+не только о 80 порте, но и 443 (ssl). Поэтому необходимо изменить строку команды
+первого запуска http-сервера примерно таким образом:
+
+```bash
+docker run ...
+    -p 80:80 \
+    -p 443:443 # <==
+```
+
+Так же, нам не желательно терять сгенерированные сертификаты. Поэтому мы
+создадим новый раздел для их хранения
+
+```bash
+docker network create ggenv.cert.storage
+```
+
+Так же, мы будем предполагать, что используем ssl-сертификаты от letsencrypt,
+поэтому подключение раздела при первом запуске контейнера http-сервера
+(основного) будет дополняться слудющим образом:
+
+```bash
+docker run ...
+    -v $(pwd)/projects:/var/www:rw,cached \
+    -v ggenv.cert.storage:/etc/letsencrypt # <==
+```
+
+Помня об этом всем - переходим к следующему этапу.
+
 ## <a name="first"></a>Первый этап: создание контейнера http-сервера
 
 Здесь важно понимать, что контейнеры http-серверов поднимаются в единственном
@@ -63,7 +94,7 @@ http-сервера, либо оба.
 docker build --tag=ggenv.nginx --file=./webserver/Dockerfile.nginx ./webserver
 docker run -d \
     -p 80:80 \
-    -v "$(pwd)/projects":/var/www:rw,cached \
+    -v $(pwd)/projects:/var/www:rw,cached \
     --network ggenv.network \
     --name ggenv.nginx ggenv.nginx
 ```
@@ -99,14 +130,13 @@ docker logs -f ggenv.nginx
 командами. Они выполняются один раз, только при установке этого решения.
 Единственная переменная, это пробрасываемый порт при первом запуске контейнера
 `docker run -p`. Если вы хотите, что бы apache2 работал, как единственный
-http-сервер, а не backend, то необходимо заменить `-p 8080:80` на `-p 80:80`.
-При этом, nginx контейнер не должен быть запущен.
+http-сервер, а не backend, то необходимо добавить параметр `-p 80:80`. При этом,
+nginx контейнер не должен быть запущен.
 
 ```bash
 docker build --tag=ggenv.httpd --file=./webserver/Dockerfile.httpd ./webserver
 docker run -d \
-    -p 8080:80 \
-    -v "$(pwd)/projects":/var/www:rw,cached \
+    -v $(pwd)/projects:/var/www:rw,cached \
     --network ggenv.network \
     --name ggenv.httpd ggenv.httpd
 ```
