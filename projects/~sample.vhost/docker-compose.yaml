@@ -4,7 +4,9 @@ services:
     build:
       context: ./env/php
       args:
-        - PHP_VERSION=7.2
+        PHP_VERSION: 7.2
+        USER_ID: ${USER_ID:-0}
+        GROUP_ID: ${GROUP_ID:-0}
     container_name: php.sample.vhost
     environment:
       VHOST_NAME: sample.vhost
