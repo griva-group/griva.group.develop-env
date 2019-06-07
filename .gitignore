@@ -1,0 +1,12 @@
+# Basic ignoring files
+*.log
+
+# IDE files
+.idea
+
+# Keep all projects
+projects/*
+
+# But include sample project
+!projects/~sample.vhost
+projects/~sample.vhost/env/sql
