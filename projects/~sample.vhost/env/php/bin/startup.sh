@@ -19,7 +19,7 @@ trap _disable_nginx_host INT TERM
 
 # Create symlink for vhost folder and reset rights
 cd /var/www && ln -sfnF vhost ${VHOST_NAME}
-chown --silent --no-dereference --recursive www-data:www-data vhost
+chown --silent --no-dereference www-data:www-data vhost
 
 for poolfile in `find /usr/local/etc/php-fpm.d/ -type f`
 do
