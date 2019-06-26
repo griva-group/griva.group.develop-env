@@ -26,6 +26,9 @@ do
      envsubst < $poolfile > `basename $poolfile`
 done
 
+# Running mail daemon
+service rsyslog start && service postfix start
+
 # Running server
 php-fpm
 

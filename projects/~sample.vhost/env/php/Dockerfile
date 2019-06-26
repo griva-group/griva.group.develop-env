@@ -38,6 +38,23 @@ RUN if [ ${USER_ID:-0} -ne 0 ] && [ ${GROUP_ID:-0} -ne 0 ]; then \
     install -d -m 0755 -o www-data -g www-data /home/www-data \
 ;fi
 
+# Устанавливаем сервис отправки электронных сообщений
+ENV DEBIAN_FRONTEND noninteractive
+RUN \
+    echo Europe/Moscow | tee /etc/timezone && \
+    dpkg-reconfigure --frontend noninteractive tzdata && \
+    apt update && apt install -y postfix rsyslog sasl2-bin && \
+    postconf -e "mydestination = localhost" && \
+    postconf -e "smtpd_sasl_auth_enable=yes" && \
+    postconf -e "broken_sasl_auth_clients=yes" && \
+    postconf -e "smtpd_relay_restrictions=permit_sasl_authenticated,reject_unauth_destination" && \
+    postconf -e "smtpd_sasl_security_options = noanonymous" && \
+    echo "gwsGewg35tG#24452qew3RED" | saslpasswd2 -c -p -u example.com postfix && \
+    ln  /etc/sasldb2 /var/spool/postfix/etc/sasldb2 && \
+    mkfifo /var/spool/postfix/public/pickup && \
+    adduser postfix sasl && \
+    touch /var/log/mail.log
+COPY etc/postfix/smtpd.conf /etc/postfix/sasl/smtpd.conf
 
 # Добавляем файлы конфигурации nginx и php в контейнер
 COPY etc/php/php.ini /usr/local/etc/php/php.ini
