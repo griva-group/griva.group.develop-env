@@ -18,7 +18,7 @@ services:
       environment:
       - VHOST_NAME=%project_name%
   sql:
-    container_name: php.%project_name%.sql
+    container_name: sql.%project_name%.sql
 ```
 
 ### Правильное распределение прав на файлы
