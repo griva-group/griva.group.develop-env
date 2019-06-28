@@ -21,11 +21,13 @@ services:
     container_name: sql.sample.vhost
     command: >
       mysqld
-      --innodb-flush-method=littlesync
-      --default-authentication-plugin=mysql_native_password
-      --innodb-use-native-aio=OFF
-      --log_bin=ON
       --socket=/tmp/mysqld.sock
+      --default-authentication-plugin=mysql_native_password
+      --log_bin=ON
+      --skip-external-locking
+      --skip-innodb
+      --default-storage-engine=MyISAM
+      --default-tmp-storage-engine=MyISAM
     environment:
       MYSQL_DATABASE: develop
       MYSQL_USER: develop
