@@ -1,6 +1,8 @@
 # Basic ignoring files and folders
 .git
+.DS_Store
 **/*.log
 
 # IDE files
 .idea
+

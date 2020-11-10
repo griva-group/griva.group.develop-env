@@ -42,7 +42,7 @@ docker run ...
 создадим новый раздел для их хранения
 
 ```bash
-docker network create ggenv.cert.storage
+docker volume create ggenv.cert.storage
 ```
 
 Так же, мы будем предполагать, что используем ssl-сертификаты от letsencrypt,

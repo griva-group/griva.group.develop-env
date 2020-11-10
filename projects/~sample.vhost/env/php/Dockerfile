@@ -56,6 +56,9 @@ RUN \
     touch /var/log/mail.log
 COPY etc/postfix/smtpd.conf /etc/postfix/sasl/smtpd.conf
 
+# устанавливаем dig для создания правильной адресации по доменному имени
+RUN apt-get update && apt-get -y install dnsutils && apt-get clean
+
 # Добавляем файлы конфигурации nginx и php в контейнер
 COPY etc/php/php.ini /usr/local/etc/php/php.ini
 COPY etc/php/pool.d /usr/local/etc/php-fpm.d

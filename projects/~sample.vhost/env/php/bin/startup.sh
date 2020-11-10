@@ -29,6 +29,9 @@ done
 # Running mail daemon
 service rsyslog start && service postfix start
 
+# set docker machine vhost loop
+echo "$(dig +short host.docker.internal) ${VHOST_NAME}" >> /etc/hosts
+
 # Running server
 php-fpm
 
